@@ -37,18 +37,18 @@ func notifyExperiment() {
     group.wait()
 }
 
-notifyExperiment()
+// notifyExperiment()
 
 
 
 // 假装是网络请求
-    func networkRequest(sleepTime: Int, closure: @escaping ()->Void) -> Void {
-        DispatchQueue.global().async { 
-            Thread.sleep(forTimeInterval: TimeInterval(sleepTime))
-            // 假装是成功回调
-            closure()
-        }
+func networkRequest(sleepTime: Int, closure: @escaping ()->Void) {
+    DispatchQueue.global().async { 
+        Thread.sleep(forTimeInterval: TimeInterval(sleepTime))
+        // 假装是成功回调
+        closure()
     }
+}
 
 
 // 利用 semaphore 来控制
@@ -79,15 +79,19 @@ func gcd_semaphore_wait_signal() {
     }
     
     group.notify(queue: queue) {
-        print("xx")
+        print("wait 1")
         semaphore.wait()
-        print("yy")
+        print("wait 2")
         semaphore.wait()
-        print("zz")
+        print("wait 3")
         semaphore.wait()
         print("all done")
     }
+
+    sleep(4)
 }
+
+gcd_semaphore_wait_signal()
 
 
 func gcd_line_request() {
