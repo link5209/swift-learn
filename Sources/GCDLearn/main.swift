@@ -2,6 +2,45 @@ import Dispatch
 import Foundation
 
 
+var value = 0
+let lock = NSLock()
+
+func notifyExperiment() {
+
+    func performTask(message: String) {
+        print("starting:", message)
+        Thread.sleep(forTimeInterval: 2)
+        lock.lock()
+        value += 5
+        lock.unlock()
+        print("done:", message)
+    }
+
+    let group = DispatchGroup()
+
+    group.enter()
+
+    group.notify(queue: .init(label: "xxx")) {
+        print("value =", value)
+    }
+
+    DispatchQueue.global().async(group: group) {
+        performTask(message: "from global queue")
+    }
+
+    let customQueue = DispatchQueue(label: "com.appcoda.delayqueue1")
+    customQueue.async(group: group) {
+        performTask(message: "from custom queue")
+    }
+
+    group.leave()
+    group.wait()
+}
+
+notifyExperiment()
+
+
+
 // 假装是网络请求
     func networkRequest(sleepTime: Int, closure: @escaping ()->Void) -> Void {
         DispatchQueue.global().async { 
@@ -72,8 +111,6 @@ func gcd_line_request() {
 }
 
 
-gcd_semaphore_wait_signal()
-
 
 func gcd_group_enter_leave() {
         let group = DispatchGroup.init()
@@ -112,73 +149,10 @@ func gcd_group_enter_leave() {
             print("all done")
         }
 
-        // group.leave()
+        group.wait()
     }
 
-
-gcd_group_enter_leave()
-
-let lock = NSLock()   // a lock to synchronize our access to `value`
-
-var value = 10
-func notifyExperiment() {
-    // rather than using `DispatchWorkItem`, a reference type, and invoking it multiple times,
-    // let's just define some closure or function to run some task
-
-    func performTask(message: String, time: UInt32 = 1) {
-        sleep(time)    // we wouldn't do this in production app, but lets do it here for pedagogic purposes, slowing it down enough so we can see what's going on
-        value += 5
-        print("performTask:", value, message)
-    }
-
-    // create a dispatch group to keep track of when these tasks are done
-
-    let group = DispatchGroup()
-
-    // let's enter the group so that we don't have race condition between dispatching tasks
-    // to the queues and our notify process
-
-    group.enter()
-
-    // define what notification will be done when the task is done
-
-    group.notify(queue: .init(label: "abc")) {
-        // self.lock.unlock()
-
-        print("notify")
-    }
-
-    // Let's run our task once on the global queue
-
-    DispatchQueue.global(qos: .utility).async(group: group) {
-        performTask(message: "from global queue")
-        // networkRequest(sleepTime:2, closure: {
-        //     print("2 end")
-        //     // group.leave()
-        // })
-    }
-
-    // Let's run our task also on a custom queue
-
-    let customQueue = DispatchQueue(label: "com.appcoda.delayqueue1", qos: .utility)
-    customQueue.async(group: group) {
-        performTask(message: "from custom queue", time: 3)
-        // networkRequest(sleepTime:1, closure: {
-        //     print("1 end")
-        //     // group.leave()
-        // })
-    }
-
-    // Now let's leave the group, resolving our `enter` at the top, allowing the `notify` block
-    // to run iff (a) all `enter` calls are balanced with `leave` calls; and (b) once the `async(group:)`
-    // calls are done.
-
-    print("waiting leave...")
-
-    // sleep(7)
-    group.leave()
-    print("leave")
-}
+// gcd_group_enter_leave()
 
 // Thread.detachNewThread {
 //     print("A new thread,name:\(Thread.current)")
