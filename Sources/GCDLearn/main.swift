@@ -118,15 +118,13 @@ func gcd_line_request() {
     sleep(4)
 }
 
-gcd_line_request()
+// gcd_line_request()
 
 
 
 func gcd_group_enter_leave() {
         let group = DispatchGroup.init()
         let queue = DispatchQueue.global()
-        
-        // group.enter()
 
         queue.async(group: group) {
             group.enter()
@@ -140,7 +138,7 @@ func gcd_group_enter_leave() {
         queue.async(group: group) {
             group.enter()
             print("2 start")
-            networkRequest(sleepTime:2, closure: {
+            networkRequest(sleepTime:1, closure: {
                 print("2 end")
                 group.leave()
             })
@@ -149,7 +147,7 @@ func gcd_group_enter_leave() {
         queue.async(group: group) {
             group.enter()
             print("3 start")
-            networkRequest(sleepTime:3, closure: {
+            networkRequest(sleepTime:2, closure: {
                 print("3 end")
                 group.leave()
             })
@@ -162,7 +160,7 @@ func gcd_group_enter_leave() {
         group.wait()
     }
 
-// gcd_group_enter_leave()
+gcd_group_enter_leave()
 
 // Thread.detachNewThread {
 //     print("A new thread,name:\(Thread.current)")
