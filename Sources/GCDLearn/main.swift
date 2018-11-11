@@ -65,14 +65,14 @@ func gcd_semaphore_wait_signal() {
     }
     
     queue.async(group: group) {
-        networkRequest(sleepTime:2, closure: {
+        networkRequest(sleepTime:1, closure: {
             print("2")
             semaphore.signal()
         })
     }
     
     queue.async(group: group) {
-        networkRequest(sleepTime:3, closure: {
+        networkRequest(sleepTime:1, closure: {
             print("3")
             semaphore.signal()
         })
@@ -88,19 +88,21 @@ func gcd_semaphore_wait_signal() {
         print("all done")
     }
 
-    sleep(4)
+    sleep(2)
 }
 
-gcd_semaphore_wait_signal()
+// gcd_semaphore_wait_signal()
 
 
+
+// 模拟同步
 func gcd_line_request() {
     let semaphore = DispatchSemaphore.init(value: 0)
     let group = DispatchGroup.init()
     let queue = DispatchQueue.global()
     
     queue.async(group: group) {
-        networkRequest(sleepTime:1, closure: {
+        networkRequest(sleepTime:2, closure: {
             print("1")
             semaphore.signal()
         })
@@ -108,11 +110,15 @@ func gcd_line_request() {
     
     queue.async(group: group) {
         semaphore.wait()
-        networkRequest(sleepTime:2, closure: {
+        networkRequest(sleepTime:1, closure: {
             print("2")
         })
     }
+
+    sleep(4)
 }
+
+gcd_line_request()
 
 
 
