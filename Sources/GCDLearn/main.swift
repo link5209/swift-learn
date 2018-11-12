@@ -17,27 +17,28 @@ func notifyExperiment() {
     }
 
     let group = DispatchGroup()
+    let queue = DispatchQueue.global()
 
     group.enter()
 
-    group.notify(queue: .init(label: "xxx")) {
-        print("value =", value)
-    }
-
-    DispatchQueue.global().async(group: group) {
+    queue.async(group: group) {
         performTask(message: "from global queue")
     }
 
     let customQueue = DispatchQueue(label: "com.appcoda.delayqueue1")
-    customQueue.async(group: group) {
+    queue.async(group: group) {
         performTask(message: "from custom queue")
+    }
+
+    group.notify(queue: .global()) {
+        print("value =", value)
     }
 
     group.leave()
     group.wait()
 }
 
-// notifyExperiment()
+notifyExperiment()
 
 
 
@@ -160,7 +161,7 @@ func gcd_group_enter_leave() {
         group.wait()
     }
 
-gcd_group_enter_leave()
+// gcd_group_enter_leave()
 
 // Thread.detachNewThread {
 //     print("A new thread,name:\(Thread.current)")
