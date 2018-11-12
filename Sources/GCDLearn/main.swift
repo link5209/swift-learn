@@ -25,7 +25,6 @@ func notifyExperiment() {
         performTask(message: "from global queue")
     }
 
-    let customQueue = DispatchQueue(label: "com.appcoda.delayqueue1")
     queue.async(group: group) {
         performTask(message: "from custom queue")
     }
@@ -162,13 +161,5 @@ func gcd_group_enter_leave() {
     }
 
 // gcd_group_enter_leave()
-
-// Thread.detachNewThread {
-//     print("A new thread,name:\(Thread.current)")
-// }
-// Thread.detachNewThread {
-//     print("A new thread1,name:\(Thread.current)")
-// }
-
 
 
