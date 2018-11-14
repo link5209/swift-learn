@@ -7,12 +7,15 @@ let package = Package(
     name: "swift-learn",
     products: [
         .executable(name: "GCDLearn", targets: ["GCDLearn"]),
+        .executable(name: "NonBlockingFileIO-learn", targets: ["NonBlockingFileIO-learn"]),
     ],
     dependencies: [
-        // .package(url: "https://github.com/apple/swift-nio-zlib-support.git", from: "1.0.0"),
+        .package(url: "https://github.com/apple/swift-nio.git", from: "1.8.0"),
     ],
     targets: [
         .target(name: "GCDLearn",
             dependencies: []),
+        .target(name: "NonBlockingFileIO-learn",
+            dependencies: ["NIO", "NIOHTTP1"]),
     ]
 )
