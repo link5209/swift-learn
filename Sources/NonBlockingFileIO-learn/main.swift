@@ -37,7 +37,7 @@ class FileNIO: ChannelInboundHandler {
                     ctx.close()
                 }
                 .whenComplete {
-                    
+                    try? file.close()
                 }
 
             }
